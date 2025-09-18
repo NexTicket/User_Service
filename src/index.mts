@@ -29,11 +29,15 @@ app.get('/health', (_, res) => {
   res.json({ 
     status: 'OK', 
     timestamp: new Date().toISOString(),
-  service: 'User Service'
+    service: 'User Service'
   });
 });
 
+// User routes
 app.use('/users', userRoutes);
+
+// API routes with /api prefix for consistency with frontend
+app.use('/api/users', userRoutes);
 
 app.listen(PORT, () => {
   console.log(`🚀 User Service running at http://localhost:${PORT}`);

@@ -4,9 +4,17 @@ import { Router, Request, Response } from 'express';
 import { db } from '../firebase.mts';
 import { auth } from '../firebase.mts'; 
 import { sendLoginEmail } from '../utils/sendEmail.mts';
+import { 
+  setUserClaims, 
+  bootstrapAdmin, 
+  fetchFirebaseUsers, 
+  ensureUserTenant,
+  createTenant,
+  getTenantByFirebaseUid
+} from '../controllers/user.controller.mts';
 
 const router = Router();
-
+//get all users
 router.get('/', verifyToken, async (req, res) => {
     if (req.user?.role !== 'admin'){
         return res.status(403).json({error: 'Forbidden: Admin access required'});
@@ -111,6 +119,49 @@ router.post('/checkin-officer', verifyToken, async (req, res) => {
   }
 });
 
+// POST /users/event-admin - Admin only
 
+
+
+// add venue owners and organizers to the tenant table
+router.post('/tenant', verifyToken, async (req, res) => {
+  if (req.user?.role !== 'admin') {
+    return res.status(403).json({ error: 'Access denied. Admins only.' });
+  }
+
+  const { uid, tenantId } = req.body;
+
+  if (!uid || !tenantId) {
+    return res.status(400).json({ error: 'User ID and Tenant ID are required.' });
+  }
+
+  try {
+    const userRef = db.collection('users').doc(uid);
+    await userRef.update({ tenantId });
+
+    res.status(200).json({ message: 'User added to tenant successfully.' });
+  } catch (error) {
+    console.error('Error adding user to tenant:', error);
+    res.status(500).json({ error: 'Failed to add user to tenant.' });
+  }
+});
 
 export default router;
+
+// New routes from Event_and_Venue_Service - User Management
+
+// Bootstrap admin role (no auth required - only for initial setup)
+router.post('/bootstrap-admin', bootstrapAdmin);
+
+// Set custom claims for a user (admin only)
+router.post('/set-claims', verifyToken, setUserClaims);
+
+// Fetch Firebase users by role (admin only)
+router.post('/firebase-users', verifyToken, fetchFirebaseUsers);
+
+// Ensure user has tenant record (authenticated users)
+router.post('/ensure-tenant', verifyToken, ensureUserTenant);
+
+// Tenant management routes
+router.post('/tenants', verifyToken, createTenant);
+router.get('/tenants/firebase/:firebaseUid', verifyToken, getTenantByFirebaseUid);
