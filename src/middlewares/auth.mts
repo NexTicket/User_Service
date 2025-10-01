@@ -1,8 +1,12 @@
 import { auth, db } from '../firebase.mts';
-import { Request, Response, NextFunction } from 'express';
+import express from 'express';
 
-export const verifyToken = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  const header = req.headers.authorization;
+interface AuthenticatedRequest extends express.Request {
+  user?: any;
+}
+
+export const verifyToken = async (req: AuthenticatedRequest, res: express.Response, next: express.NextFunction): Promise<void> => {
+  const header = req.headers['authorization'];
 
   if (!header || !header.startsWith('Bearer ')) {
     res.status(401).json({ error: 'Missing or invalid Authorization header' });
