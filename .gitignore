@@ -42,4 +42,4 @@ yarn-error.log*
 
 # Misc
 .DS_Store
-Thumbs.db
+Thumbs.dbnode_modules/
