@@ -1,13 +1,13 @@
 import express from 'express';
 import cors from 'cors';
 import { config } from 'dotenv';
-import { verifyToken } from './middlewares/auth.mts';
-import userRoutes from './routers/users.router.mts';
+import { verifyToken } from './middlewares/auth.js';
+import userRoutes from './routers/users.router.js';
 
 config(); // load .env
 
 const app = express();
-const PORT = process.env.PORT || 4001;
+const PORT = process.env.PORT || 8080;
 
 app.use(cors());
 app.use(express.json());

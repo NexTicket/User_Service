@@ -1,6 +1,6 @@
-import { NextFunction, Request, Response } from 'express';
+import type { NextFunction, Request, Response } from 'express';
 import { getAuth } from 'firebase-admin/auth';
-import { db } from '../firebase.mts';
+import { db } from '../firebase.js';
 
 export const optionalAuth = async (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;

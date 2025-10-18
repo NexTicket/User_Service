@@ -1,18 +1,26 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
-    "module": "ESNext",
-    "moduleResolution": "Node",
+    /* Basic setup */
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "outDir": "dist",
+    "rootDir": "src",
+    "strict": true,
+
+    /* Node + ESM interop */
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "moduleDetection": "force",
-    "strict": true,
-    "outDir": "dist",
-    "rootDir": "src",
+    "verbatimModuleSyntax": true,
+
+    /* Types and tooling */
     "types": ["node"],
     "typeRoots": ["./node_modules/@types", "./src/types"],
-    "allowImportingTsExtensions": true,
-    "noEmit": true
+
+    /* Build behavior */
+    "noEmitOnError": true,
+    "forceConsistentCasingInFileNames": true
   },
   "include": ["src/**/*"],
   "ts-node": {

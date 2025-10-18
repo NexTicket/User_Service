@@ -1,4 +1,4 @@
-import { auth, db } from '../firebase.mts';
+import { auth, db } from '../firebase.js';
 import express from 'express';
 
 interface AuthenticatedRequest extends express.Request {

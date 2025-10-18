@@ -1,8 +1,8 @@
-import { Request, Response } from 'express';
+import type { Request, Response } from 'express';
 import { getAuth } from 'firebase-admin/auth';
 import { getFirestore } from 'firebase-admin/firestore';
-import { auth, db } from '../firebase.mts';
-import { callEventServiceTenant } from '../utils/eventServiceApi.mts';
+import { auth, db } from '../firebase.js';
+import { callEventServiceTenant } from '../utils/eventServiceApi.js';
 // Import ensureTenantExists dynamically to avoid import issues
 // import { ensureTenantExists } from '../utils/autoCreateTenant.mts';
 
@@ -207,7 +207,7 @@ export const bootstrapAdmin = async (req: Request, res: Response) => {
     });
 
   } catch (error: any) {
-    console.error('❌ Error bootstrapping admin:', error);
+    console.error('Error bootstrapping admin:', error);
     
     // Handle specific Firebase errors
     if (error.code === 'auth/user-not-found') {
@@ -230,13 +230,13 @@ export const fetchFirebaseUsers = async (req: Request, res: Response) => {
     const user = req.user;
 
     // Only admins can fetch user lists
-    if (!user || user.role !== 'admin') {
+    if (!user || user.role !== 'admin' && user.role !== 'event_admin') {
       return res.status(403).json({
         error: 'Access denied. Only administrators can fetch user lists.'
       });
     }
 
-    console.log('👥 Fetching Firebase users with role filter:', role);
+    console.log('Fetching Firebase users with role filter:', role);
 
     // Get all users from Firebase Auth (with pagination if needed)
     const usersCollection = db.collection('users');
@@ -262,7 +262,7 @@ export const fetchFirebaseUsers = async (req: Request, res: Response) => {
       });
     });
 
-    console.log(`✅ Found ${users.length} users${role ? ` with role '${role}'` : ''}`);
+    console.log(`Found ${users.length} users${role ? ` with role '${role}'` : ''}`);
 
     res.status(200).json({
       message: 'Users fetched successfully',
@@ -271,7 +271,7 @@ export const fetchFirebaseUsers = async (req: Request, res: Response) => {
     });
 
   } catch (error: any) {
-    console.error('❌ Error fetching Firebase users:', error);
+    console.error('Error fetching Firebase users:', error);
     res.status(500).json({
       error: 'Failed to fetch users',
       details: error.message
