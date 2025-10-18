@@ -1,4 +1,4 @@
-import { callEventServiceTenant } from './eventServiceApi.mjs';
+import { callEventServiceTenant } from './eventServiceApi.js';
 
 /**
  * Auto-create tenant for user if it doesn't exist

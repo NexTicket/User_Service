@@ -1,9 +1,9 @@
 import Express from 'express';
-import { verifyToken } from '../middlewares/auth.mts';
-import { Router, Request, Response } from 'express';
-import { db } from '../firebase.mts';
-import { auth } from '../firebase.mts'; 
-// import { sendLoginEmail } from '../utils/sendEmail.mts';
+import { verifyToken } from '../middlewares/auth.js';
+import { Router } from 'express';
+import { db } from '../firebase.js';
+// import { auth } from '../firebase'; 
+// import { sendLoginEmail } from '../utils/sendEmail';
 import { 
   setUserClaims, 
   bootstrapAdmin, 
@@ -11,7 +11,7 @@ import {
   ensureUserTenant,
   createTenant,
   getTenantByFirebaseUid
-} from '../controllers/user.controller.mts';
+} from '../controllers/user.controller.js';
 
 const router = Router();
 //get all users

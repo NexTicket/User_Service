@@ -1,8 +1,8 @@
-import { Request, Response } from 'express';
+import type { Request, Response } from 'express';
 import { getAuth } from 'firebase-admin/auth';
 import { getFirestore } from 'firebase-admin/firestore';
-import { auth, db } from '../firebase.mts';
-import { callEventServiceTenant } from '../utils/eventServiceApi.mts';
+import { auth, db } from '../firebase.js';
+import { callEventServiceTenant } from '../utils/eventServiceApi.js';
 // Import ensureTenantExists dynamically to avoid import issues
 // import { ensureTenantExists } from '../utils/autoCreateTenant.mts';
 
