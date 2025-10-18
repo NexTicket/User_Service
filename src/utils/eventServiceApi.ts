@@ -1,5 +1,5 @@
 // Utility for communicating with Event_and_Venue_Service for tenant operations
-const EVENT_SERVICE_URL = process.env.EVENT_SERVICE_URL || 'http://localhost:4000';
+const EVENT_SERVICE_URL = process.env.EVENT_SERVICE_URL || 'https://event-and-venue-service-513765269189.asia-south1.run.app';
 
 interface TenantData {
   id?: number;
