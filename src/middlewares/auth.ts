@@ -6,6 +6,42 @@ interface AuthenticatedRequest extends express.Request {
 }
 
 export const verifyToken = async (req: AuthenticatedRequest, res: express.Response, next: express.NextFunction): Promise<void> => {
+  // 🔑 Check if API Gateway already authenticated (trust X-User-* headers)
+  const xUserId = req.headers['x-user-id'] as string;
+  const xUserEmail = req.headers['x-user-email'] as string;
+  const xUserRole = req.headers['x-user-role'] as string;
+
+  if (xUserId && xUserEmail && xUserRole) {
+    // API Gateway already authenticated - trust the headers
+    console.log(`✅ Using API Gateway auth: ${xUserEmail} (${xUserRole})`);
+    
+    // Fetch additional user data from Firestore if needed
+    try {
+      const userDoc = await db.collection('users').doc(xUserId).get();
+      const userData = userDoc.exists ? userDoc.data() : {};
+      
+      req.user = {
+        uid: xUserId,
+        email: xUserEmail,
+        role: xUserRole,
+        name: xUserEmail.split('@')[0], // Extract name from email as fallback
+        ...userData // Include any additional Firestore data
+      };
+    } catch (error) {
+      // If Firestore fetch fails, just use the headers
+      console.warn('⚠️ Could not fetch user data from Firestore, using headers only');
+      req.user = {
+        uid: xUserId,
+        email: xUserEmail,
+        role: xUserRole,
+        name: xUserEmail.split('@')[0]
+      };
+    }
+    
+    return next();
+  }
+
+  // No API Gateway headers - verify token directly
   const header = req.headers['authorization'];
 
   if (!header || !header.startsWith('Bearer ')) {
