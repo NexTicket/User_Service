@@ -229,10 +229,22 @@ export const fetchFirebaseUsers = async (req: Request, res: Response) => {
     const { role } = req.body;
     const user = req.user;
 
-    // Only admins can fetch user lists
-    if (!user || user.role !== 'admin' && user.role !== 'event_admin') {
+    // Allow admins, event_admins, and organizers to fetch user lists
+    // Organizers need this to assign event_admin and checkin_officer to their events
+    const allowedRoles = ['admin', 'event_admin', 'organizer'];
+    
+    if (!user || !allowedRoles.includes(user.role)) {
+      console.log('❌ Access denied for fetchFirebaseUsers:', {
+        userExists: !!user,
+        userRole: user?.role,
+        allowedRoles
+      });
       return res.status(403).json({
-        error: 'Access denied. Only administrators can fetch user lists.'
+        error: 'Access denied. Only administrators and organizers can fetch user lists.',
+        details: {
+          currentRole: user?.role || 'none',
+          allowedRoles
+        }
       });
     }
 
